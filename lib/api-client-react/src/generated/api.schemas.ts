@@ -65,6 +65,77 @@ export interface ErrorResponse {
   error: string;
 }
 
+export type RecipeSummaryDifficulty = typeof RecipeSummaryDifficulty[keyof typeof RecipeSummaryDifficulty];
+
+
+export const RecipeSummaryDifficulty = {
+  easy: 'easy',
+  medium: 'medium',
+  hard: 'hard',
+} as const;
+
+export interface RecipeSummary {
+  recipeId: string;
+  name: string;
+  description: string;
+  cuisine: string;
+  category: string;
+  dishType: string;
+  mainIngredient: string;
+  cookingTimeMinutes: number;
+  difficulty: RecipeSummaryDifficulty;
+  vegetarian: boolean;
+  spicy: boolean;
+  mealType: string;
+  /** @nullable */
+  imageUrl: string | null;
+  tags: string[];
+  servings: number;
+}
+
+export interface RecipeSearchResponse {
+  results: RecipeSummary[];
+  total: number;
+}
+
+export interface RecipeSubstitution {
+  ingredient: string;
+  quantity: number;
+  unit: string;
+  effect: string;
+}
+
+export interface RecipeIngredient {
+  ingredientId: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  optional: boolean;
+  group: string;
+  /** @nullable */
+  notes?: string | null;
+  substitutions: RecipeSubstitution[];
+}
+
+export interface RecipeStep {
+  stepNumber: number;
+  title: string;
+  instruction: string;
+  /** @nullable */
+  durationMinutes: number | null;
+  /** @nullable */
+  heatLevel: string | null;
+  cookingCue: string;
+}
+
+export type Recipe = RecipeSummary & {
+  prepTimeMinutes: number;
+  cookTimeMinutes: number;
+  totalTimeMinutes: number;
+  ingredients: RecipeIngredient[];
+  steps: RecipeStep[];
+};
+
 export type ListRestaurantsParams = {
 /**
  * @minimum -90
@@ -103,5 +174,31 @@ export const ListRestaurantsBudget = {
   premium: 'premium',
   luxury: 'luxury',
   any: 'any',
+} as const;
+
+export type ListRecipesParams = {
+query?: string;
+cuisine?: string;
+category?: string;
+dishType?: string;
+mainIngredient?: string;
+/**
+ * @minimum 1
+ * @maximum 600
+ */
+maxCookingTime?: number;
+difficulty?: ListRecipesDifficulty;
+vegetarian?: boolean;
+spicy?: boolean;
+mealType?: string;
+};
+
+export type ListRecipesDifficulty = typeof ListRecipesDifficulty[keyof typeof ListRecipesDifficulty];
+
+
+export const ListRecipesDifficulty = {
+  easy: 'easy',
+  medium: 'medium',
+  hard: 'hard',
 } as const;
 

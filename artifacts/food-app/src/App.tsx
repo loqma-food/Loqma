@@ -8,6 +8,9 @@ import Home from '@/pages/home';
 import EatOut from '@/pages/eat-out';
 import Restaurants from '@/pages/restaurants';
 import RestaurantDetail from '@/pages/restaurant-detail';
+import Recipes from '@/pages/recipes';
+import RecipeDetail from '@/pages/recipe-detail';
+import CookMode from '@/pages/cook-mode';
 import {
   Route,
   Switch,
@@ -25,6 +28,9 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/eat-out" component={EatOut} />
+         <Route path="/cook" component={Recipes} />
+         <Route path="/recipes/:recipeId/cook" component={CookMode} />
+         <Route path="/recipes/:recipeId" component={RecipeDetail} />
         <Route path="/restaurants" component={Restaurants} />
         <Route path="/restaurants/:id" component={RestaurantDetail} />
         <Route component={NotFound} />

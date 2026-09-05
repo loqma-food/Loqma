@@ -12,6 +12,8 @@ tags:
     description: Health operations
   - name: restaurants
     description: Live restaurant discovery backed by OpenStreetMap data
+  - name: recipes
+    description: Persistent Savorly recipe discovery and cooking guidance
 paths:
   /healthz:
     get:
@@ -115,6 +117,105 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /recipes:
+    get:
+      operationId: listRecipes
+      tags: [recipes]
+      summary: Discover recipes
+      description: Searches persistent Savorly recipes with optional discovery filters.
+      parameters:
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: cuisine
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: dishType
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: mainIngredient
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: maxCookingTime
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 600
+        - name: difficulty
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [easy, medium, hard]
+        - name: vegetarian
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: spicy
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: mealType
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Persistent recipe results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipeSearchResponse"
+        "400":
+          description: Invalid recipe filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /recipes/{recipeId}:
+    get:
+      operationId: getRecipe
+      tags: [recipes]
+      summary: Get a recipe
+      description: Returns a persistent recipe with structured ingredients, substitutions, and cooking steps.
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Recipe details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "404":
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -204,5 +305,124 @@ components:
       required: [error]
       properties:
         error:
+          type: string
+    RecipeSearchResponse:
+      type: object
+      required: [results, total]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeSummary"
+        total:
+          type: integer
+      additionalProperties: false
+    RecipeSummary:
+      type: object
+      required: [recipeId, name, description, cuisine, category, dishType, mainIngredient, cookingTimeMinutes, difficulty, vegetarian, spicy, mealType, imageUrl, tags, servings]
+      properties:
+        recipeId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        cuisine:
+          type: string
+        category:
+          type: string
+        dishType:
+          type: string
+        mainIngredient:
+          type: string
+        cookingTimeMinutes:
+          type: integer
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        vegetarian:
+          type: boolean
+        spicy:
+          type: boolean
+        mealType:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+          format: uri
+        tags:
+          type: array
+          items:
+            type: string
+        servings:
+          type: integer
+    Recipe:
+      allOf:
+        - $ref: "#/components/schemas/RecipeSummary"
+        - type: object
+          required: [prepTimeMinutes, cookTimeMinutes, totalTimeMinutes, ingredients, steps]
+          properties:
+            prepTimeMinutes:
+              type: integer
+            cookTimeMinutes:
+              type: integer
+            totalTimeMinutes:
+              type: integer
+            ingredients:
+              type: array
+              items:
+                $ref: "#/components/schemas/RecipeIngredient"
+            steps:
+              type: array
+              items:
+                $ref: "#/components/schemas/RecipeStep"
+    RecipeIngredient:
+      type: object
+      required: [ingredientId, name, quantity, unit, optional, group, substitutions]
+      properties:
+        ingredientId:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+        optional:
+          type: boolean
+        group:
+          type: string
+        notes:
+          type: ["string", "null"]
+        substitutions:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeSubstitution"
+    RecipeSubstitution:
+      type: object
+      required: [ingredient, quantity, unit, effect]
+      properties:
+        ingredient:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+        effect:
+          type: string
+    RecipeStep:
+      type: object
+      required: [stepNumber, title, instruction, durationMinutes, heatLevel, cookingCue]
+      properties:
+        stepNumber:
+          type: integer
+        title:
+          type: string
+        instruction:
+          type: string
+        durationMinutes:
+          type: ["integer", "null"]
+        heatLevel:
+          type: ["string", "null"]
+        cookingCue:
           type: string
 

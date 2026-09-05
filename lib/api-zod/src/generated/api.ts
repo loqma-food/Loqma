@@ -82,3 +82,103 @@ export const ListRestaurantsResponse = zod.object({
 })
 
 
+/**
+ * Searches persistent Savorly recipes with optional discovery filters.
+ * @summary Discover recipes
+ */
+export const listRecipesQueryMaxCookingTimeMax = 600;
+
+
+
+export const ListRecipesQueryParams = zod.object({
+  "query": zod.coerce.string().optional(),
+  "cuisine": zod.coerce.string().optional(),
+  "category": zod.coerce.string().optional(),
+  "dishType": zod.coerce.string().optional(),
+  "mainIngredient": zod.coerce.string().optional(),
+  "maxCookingTime": zod.coerce.number().int().min(1).max(listRecipesQueryMaxCookingTimeMax).optional(),
+  "difficulty": zod.enum(['easy', 'medium', 'hard']).optional(),
+  "vegetarian": zod.coerce.boolean().optional(),
+  "spicy": zod.coerce.boolean().optional(),
+  "mealType": zod.coerce.string().optional()
+})
+
+export const ListRecipesResponse = zod.object({
+  "results": zod.array(zod.object({
+  "recipeId": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "cuisine": zod.string(),
+  "category": zod.string(),
+  "dishType": zod.string(),
+  "mainIngredient": zod.string(),
+  "cookingTimeMinutes": zod.number().int(),
+  "difficulty": zod.enum(['easy', 'medium', 'hard']),
+  "vegetarian": zod.boolean(),
+  "spicy": zod.boolean(),
+  "mealType": zod.string(),
+  "imageUrl": zod.string().url().nullable(),
+  "tags": zod.array(zod.string()),
+  "servings": zod.number().int()
+})),
+  "total": zod.number().int()
+})
+
+
+/**
+ * Returns a persistent recipe with structured ingredients, substitutions, and cooking steps.
+ * @summary Get a recipe
+ */
+
+
+
+export const GetRecipeParams = zod.object({
+  "recipeId": zod.coerce.string().min(1)
+})
+
+export const GetRecipeResponse = zod.object({
+  "recipeId": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "cuisine": zod.string(),
+  "category": zod.string(),
+  "dishType": zod.string(),
+  "mainIngredient": zod.string(),
+  "cookingTimeMinutes": zod.number().int(),
+  "difficulty": zod.enum(['easy', 'medium', 'hard']),
+  "vegetarian": zod.boolean(),
+  "spicy": zod.boolean(),
+  "mealType": zod.string(),
+  "imageUrl": zod.string().url().nullable(),
+  "tags": zod.array(zod.string()),
+  "servings": zod.number().int()
+}).and(zod.object({
+  "prepTimeMinutes": zod.number().int(),
+  "cookTimeMinutes": zod.number().int(),
+  "totalTimeMinutes": zod.number().int(),
+  "ingredients": zod.array(zod.object({
+  "ingredientId": zod.string(),
+  "name": zod.string(),
+  "quantity": zod.number(),
+  "unit": zod.string(),
+  "optional": zod.boolean(),
+  "group": zod.string(),
+  "notes": zod.string().nullish(),
+  "substitutions": zod.array(zod.object({
+  "ingredient": zod.string(),
+  "quantity": zod.number(),
+  "unit": zod.string(),
+  "effect": zod.string()
+}))
+})),
+  "steps": zod.array(zod.object({
+  "stepNumber": zod.number().int(),
+  "title": zod.string(),
+  "instruction": zod.string(),
+  "durationMinutes": zod.number().int().nullable(),
+  "heatLevel": zod.string().nullable(),
+  "cookingCue": zod.string()
+}))
+}))
+
+

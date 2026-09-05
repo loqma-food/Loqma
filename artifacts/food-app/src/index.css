@@ -161,3 +161,8 @@
 .font-display { font-family: var(--app-font-serif); }
 .text-balance { text-wrap: balance; }
 .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.recipe-image { background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent) / .6)); }
+.touch-target { min-height: 44px; min-width: 44px; }
+.step-progress { transition: width .35s ease; }

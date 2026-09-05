@@ -44,6 +44,7 @@ export function SavorlyShell({ children, showChef = false }: SavorlyShellProps) 
   const [chefOpen, setChefOpen] = useState(showChef);
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
+    { href: '/cook', label: 'Cook', icon: Utensils },
     { href: '/eat-out', label: 'Eat out', icon: Compass },
   ];
   return (
@@ -61,7 +62,7 @@ export function SavorlyShell({ children, showChef = false }: SavorlyShellProps) 
       <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-background/90 px-5 py-2 backdrop-blur-xl md:hidden" aria-label="Primary navigation">
         <div className="mx-auto flex max-w-md items-center justify-around">
           {navItems.map(({ href, label, icon: Icon }) => {
-            const active = location === href;
+            const active = location === href || (href === '/cook' && location.startsWith('/recipes'));
             return <Link key={href} href={href} className={`flex min-w-20 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-bold transition ${active ? 'text-primary' : 'text-muted-foreground'}`} data-testid={`link-nav-${label.toLowerCase().replace(' ', '-')}`}>
               <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 1.8} />
               {label}

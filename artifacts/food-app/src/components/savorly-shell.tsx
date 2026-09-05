@@ -6,12 +6,15 @@ type SavorlyShellProps = { children: ReactNode; showChef?: boolean };
 
 export function BrandMark() {
   return (
-    <span className="inline-flex items-center gap-2.5" aria-label="Savorly home">
+    <span className="inline-flex items-center gap-2.5" aria-label="Loqma home">
       <span className="relative flex h-9 w-9 items-center justify-center rounded-[13px] bg-primary text-primary-foreground shadow-sm">
         <span className="absolute h-5 w-5 rounded-full border-2 border-current" />
         <span className="absolute h-1.5 w-1.5 rounded-full bg-current" />
       </span>
-      <span className="font-display text-[1.6rem] font-bold tracking-[-0.04em]">savorly</span>
+      <span className="flex flex-col leading-none">
+        <span className="font-display text-[1.35rem] font-bold tracking-[-0.04em]" dir="rtl">لقمة</span>
+        <span className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">Loqma</span>
+      </span>
     </span>
   );
 }
@@ -52,7 +55,7 @@ export function SavorlyShell({ children, showChef = false }: SavorlyShellProps) 
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 md:px-8 md:py-7">
         <Link href="/" className="transition hover:opacity-80" data-testid="link-brand-home"><BrandMark /></Link>
         <div className="flex items-center gap-2">
-          <span className="hidden rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground sm:inline-flex">Good food, close by</span>
+          <span className="hidden rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground sm:inline-flex">Every Bite Has a Story</span>
           <button onClick={() => setChefOpen((value) => !value)} className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:-translate-y-0.5 hover:border-primary" aria-label="Toggle Mini Chef" data-testid="button-toggle-mini-chef">
             <Utensils className="h-4 w-4" />
           </button>

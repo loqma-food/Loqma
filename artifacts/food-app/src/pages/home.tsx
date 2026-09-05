@@ -13,7 +13,8 @@ export default function Home() {
         <div className="relative max-w-2xl">
           <LocationPill>Where appetite meets place</LocationPill>
           <h1 className="mt-6 max-w-xl font-display text-[clamp(3.2rem,11vw,7.5rem)] font-bold leading-[.86] tracking-[-0.065em] text-balance">Make room for <span className="text-primary">good</span> decisions.</h1>
-          <p className="mt-7 max-w-md text-base leading-7 text-sidebar-foreground/72 sm:text-lg">Savorly turns the “where should we eat?” spiral into a short list you can actually feel excited about.</p>
+          <p className="mt-7 max-w-md text-base leading-7 text-sidebar-foreground/72 sm:text-lg">Loqma turns the “where should we eat?” spiral into a short list you can actually feel excited about.</p>
+          <p className="mt-4 max-w-md text-sm font-semibold leading-6 text-sidebar-foreground/65" dir="auto">لقمة — كل لقمة لها حكاية.<br />Loqma — Every Bite Has a Story.</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Link href="/eat-out" className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-primary px-6 text-base font-bold text-primary-foreground transition hover:-translate-y-1 hover:shadow-lg" data-testid="link-start-eat-out">
               Take me to dinner <ArrowRight className="h-5 w-5" />
@@ -30,7 +31,7 @@ export default function Home() {
           <SectionEyebrow>A better way to choose</SectionEyebrow>
           <h2 className="max-w-sm font-display text-4xl font-bold leading-[.95] tracking-[-0.045em] sm:text-5xl">Less scrolling. More savoring.</h2>
           <p className="mt-5 max-w-sm leading-7 text-muted-foreground">Live local data, a human-feeling shortlist, and just enough guidance to get you out the door.</p>
-          <p className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-muted-foreground" data-testid="status-savorly-service"><span className={`h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-secondary-foreground' : 'bg-primary'}`} />{health?.status === 'ok' ? 'Local listings are live' : 'Connecting to local listings'}</p>
+          <p className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-muted-foreground" data-testid="status-loqma-service"><span className={`h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-secondary-foreground' : 'bg-primary'}`} />{health?.status === 'ok' ? 'Local listings are live' : 'Connecting to local listings'}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           <FeatureCard number="01" icon={Compass} title="Set the scene" body="Tell us your budget, mood, and where you are." />

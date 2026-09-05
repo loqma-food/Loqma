@@ -231,7 +231,7 @@ export const getListRecipesUrl = (params?: ListRecipesParams,) => {
 }
 
 /**
- * Searches persistent Savorly recipes with optional discovery filters.
+ * Searches persistent Loqma recipes with optional discovery filters.
  * @summary Discover recipes
  */
 export const listRecipes = async (params?: ListRecipesParams, options?: Parameters<typeof customFetch>[1]): Promise<RecipeSearchResponse> => {

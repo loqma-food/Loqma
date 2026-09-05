@@ -8,7 +8,7 @@ export function RecipeImage({ recipe, className = '' }: { recipe: RecipeSummary;
   if (!recipe.imageUrl || imageFailed) {
     return <div className={`recipe-image relative flex items-center justify-center overflow-hidden ${className}`} data-testid={`img-recipe-placeholder-${recipe.recipeId}`}>
       <Utensils className="h-10 w-10 text-sidebar/35" strokeWidth={1.2} />
-      <span className="absolute bottom-3 left-3 rounded-full bg-card/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.14em] text-muted-foreground">Savorly recipe</span>
+      <span className="absolute bottom-3 left-3 rounded-full bg-card/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.14em] text-muted-foreground">Loqma recipe</span>
     </div>;
   }
   return <img src={recipe.imageUrl} alt="" onError={() => setImageFailed(true)} className={`object-cover ${className}`} data-testid={`img-recipe-${recipe.recipeId}`} />;

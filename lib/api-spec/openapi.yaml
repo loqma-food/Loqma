@@ -13,7 +13,7 @@ tags:
   - name: restaurants
     description: Live restaurant discovery backed by OpenStreetMap data
   - name: recipes
-    description: Persistent Savorly recipe discovery and cooking guidance
+    description: Persistent Loqma recipe discovery and cooking guidance
 paths:
   /healthz:
     get:
@@ -122,7 +122,7 @@ paths:
       operationId: listRecipes
       tags: [recipes]
       summary: Discover recipes
-      description: Searches persistent Savorly recipes with optional discovery filters.
+      description: Searches persistent Loqma recipes with optional discovery filters.
       parameters:
         - name: query
           in: query

@@ -83,7 +83,7 @@ export const ListRestaurantsResponse = zod.object({
 
 
 /**
- * Searches persistent Savorly recipes with optional discovery filters.
+ * Searches persistent Loqma recipes with optional discovery filters.
  * @summary Discover recipes
  */
 export const listRecipesQueryMaxCookingTimeMax = 600;

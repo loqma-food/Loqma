@@ -202,7 +202,7 @@ out center tags;
         method: "POST",
         headers: {
           "content-type": "application/x-www-form-urlencoded",
-          "user-agent": "Savorly/1.0 (real restaurant discovery)",
+          "user-agent": "Loqma/1.0 (real restaurant discovery)",
         },
         body: new URLSearchParams({ data: query }),
         signal: AbortSignal.timeout(15_000),

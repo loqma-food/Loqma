@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: restaurants
+    description: Live restaurant discovery backed by OpenStreetMap data
 paths:
   /healthz:
     get:
@@ -24,6 +26,95 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /restaurants:
+    get:
+      operationId: listRestaurants
+      tags: [restaurants]
+      summary: Find nearby restaurants
+      description: Searches live OpenStreetMap restaurant data. Fields not present in verified source data are returned as null and must be shown as unavailable.
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+        - name: radius
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 500
+            maximum: 25000
+            default: 5000
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: cuisine
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: budget
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [budget, moderate, premium, luxury, any]
+        - name: mealType
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: vegetarian
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: openNow
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: minRating
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            minimum: 0
+            maximum: 5
+      responses:
+        "200":
+          description: Live restaurant results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantSearchResponse"
+        "400":
+          description: Invalid location or filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Restaurant source unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +124,85 @@ components:
           type: string
       required:
         - status
+    RestaurantSearchResponse:
+      type: object
+      required: [source, results, searchedAt]
+      properties:
+        source:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Restaurant"
+        searchedAt:
+          type: string
+          format: date-time
+    Restaurant:
+      type: object
+      required: [id, name, source, coordinates, verifiedFields]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        source:
+          type: string
+        sourceUrl:
+          type: ["string", "null"]
+          format: uri
+        imageUrl:
+          type: ["string", "null"]
+          format: uri
+        cuisine:
+          type: ["string", "null"]
+        rating:
+          type: ["number", "null"]
+        reviewCount:
+          type: ["integer", "null"]
+        priceLevel:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        openingHours:
+          type: ["string", "null"]
+        menuUrl:
+          type: ["string", "null"]
+        websiteUrl:
+          type: ["string", "null"]
+        recommendedDish:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        distanceMeters:
+          type: ["number", "null"]
+        isOpenNow:
+          type: ["boolean", "null"]
+        vegetarianAvailable:
+          type: ["boolean", "null"]
+        coordinates:
+          $ref: "#/components/schemas/Coordinates"
+        verifiedFields:
+          type: array
+          items:
+            type: string
+        disclaimer:
+          type: string
+    Coordinates:
+      type: object
+      required: [lat, lon]
+      properties:
+        lat:
+          type: number
+          format: double
+        lon:
+          type: number
+          format: double
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
 

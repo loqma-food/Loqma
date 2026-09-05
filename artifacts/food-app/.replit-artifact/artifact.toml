@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Savorly"
+description = "A mobile-first food discovery and cooking app with real restaurant discovery, recipe exploration, favorites, and guided cooking mode."
+version = "1.0.0"
+id = "artifacts/food-app"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21920
+
+[services.development]
+run = "pnpm --filter @workspace/food-app run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/food-app", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/food-app/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21920"
+BASE_PATH = "/"

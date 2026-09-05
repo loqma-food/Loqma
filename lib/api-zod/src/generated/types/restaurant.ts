@@ -5,14 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-export interface HealthStatus {
-  status: string;
-}
-
-export interface Coordinates {
-  lat: number;
-  lon: number;
-}
+import type { Coordinates } from './coordinates';
 
 export interface Restaurant {
   id: string;
@@ -54,54 +47,3 @@ export interface Restaurant {
   verifiedFields: string[];
   disclaimer?: string;
 }
-
-export interface RestaurantSearchResponse {
-  source: string;
-  results: Restaurant[];
-  searchedAt: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export type ListRestaurantsParams = {
-/**
- * @minimum -90
- * @maximum 90
- */
-lat: number;
-/**
- * @minimum -180
- * @maximum 180
- */
-lon: number;
-/**
- * @minimum 500
- * @maximum 25000
- */
-radius?: number;
-query?: string;
-cuisine?: string;
-budget?: ListRestaurantsBudget;
-mealType?: string;
-vegetarian?: boolean;
-openNow?: boolean;
-/**
- * @minimum 0
- * @maximum 5
- */
-minRating?: number;
-};
-
-export type ListRestaurantsBudget = typeof ListRestaurantsBudget[keyof typeof ListRestaurantsBudget];
-
-
-export const ListRestaurantsBudget = {
-  budget: 'budget',
-  moderate: 'moderate',
-  premium: 'premium',
-  luxury: 'luxury',
-  any: 'any',
-} as const;
-

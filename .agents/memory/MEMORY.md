@@ -1,0 +1,1 @@
+- [Live restaurant data](live-restaurant-data.md) — preserve source truth, use resilient public endpoints, and never infer missing restaurant details.

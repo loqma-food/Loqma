@@ -1,6 +1,8 @@
+import { eq } from "drizzle-orm";
 import { db, recipesTable, type InsertRecipe } from "@workspace/db";
+import { egyptianRecipeSeed } from "./egyptian-recipe-seed";
 
-const recipeSeed: InsertRecipe[] = [
+const legacyRecipeSeed: InsertRecipe[] = [
   {
     recipeId: "shakshuka-classic",
     name: "Classic Shakshuka",
@@ -217,9 +219,78 @@ const recipeSeed: InsertRecipe[] = [
   },
 ];
 
+const legacyArabic: Record<string, { name: string; description: string }> = {
+  "shakshuka-classic": { name: "شكشوكة كلاسيكية", description: "بيض مطهو بهدوء في صلصة طماطم وفلفل متبلة، مع أعشاب وخبز دافي." },
+  "chicken-shawarma-bowl": { name: "طبق شاورما فراخ سريع", description: "فراخ متبلة طرية مع أرز بالليمون وخيار مقرمش وصلصة زبادي باردة." },
+  "spaghetti-carbonara": { name: "سباجيتي كاربونارا", description: "مكرونة بصوص البيض والجبنة مع بانشيتا مقرمشة وفلفل أسود." },
+  "pad-thai": { name: "باد تاي متوازن", description: "نودلز أرز بصوص تمر هندي مع جمبري وبيض وفول سوداني محمص." },
+  "red-lentil-soup": { name: "شوربة عدس أحمر بالليمون", description: "شوربة عدس ناعمة بالكمون والجزر والليمون، بتتعمل في حلة واحدة." },
+  "salmon-teriyaki": { name: "سلمون ترياكي لامع", description: "سلمون متحمر ومغطى بصوص الصويا والزنجبيل، مع أرز وخضار." },
+};
+
+const ingredientArabic: Record<string, string> = {
+  "Yellow onion": "بصل", "Red bell pepper": "فلفل رومي أحمر", Garlic: "ثوم", "Crushed tomatoes": "طماطم مطحونة",
+  "Smoked paprika": "بابريكا مدخنة", Eggs: "بيض", "Fresh parsley": "بقدونس", "Olive oil": "زيت زيتون",
+  "Boneless chicken thighs": "وراك فراخ مخلية", "Lemon juice": "عصير ليمون", "Plain Greek yogurt": "زبادي يوناني",
+  "Shawarma spice blend": "خلطة بهارات شاورما", "Basmati rice": "أرز بسمتي", Cucumber: "خيار",
+  "Spaghetti": "سباجيتي", Pancetta: "بانشيتا", "Egg yolks": "صفار بيض", "Pecorino Romano": "جبنة بيكورينو رومانو",
+  "Black pepper": "فلفل أسود", "Thai rice noodles": "نودلز أرز تايلاندي", "Raw shrimp": "جمبري ني",
+  "Tamarind concentrate": "مركز تمر هندي", "Fish sauce": "صوص سمك", Egg: "بيضة", "Bean sprouts": "براعم فاصوليا",
+  "Roasted peanuts": "فول سوداني محمص", "Red lentils": "عدس أحمر", Carrots: "جزر", "Vegetable stock": "شوربة خضار",
+  "Aleppo pepper": "فلفل حلبي", "Salmon fillets": "فيليه سلمون", "Soy sauce": "صوص صويا", Mirin: "ميرين",
+  "Fresh ginger": "زنجبيل طازج", "Brown sugar": "سكر بني", "Cooked rice": "أرز مطبوخ", "Sesame seeds": "سمسم",
+  "Fine salt": "ملح ناعم", "Neutral oil": "زيت نباتي", "Canned diced tomatoes": "طماطم مكعبات معلبة",
+};
+
+const legacyArabicUnits: Record<string, string> = {
+  g: "جم", ml: "مل", large: "كبيرة", medium: "متوسطة", small: "صغيرة", clove: "فص", cloves: "فصوص",
+  teaspoon: "ملعقة صغيرة", tablespoons: "ملاعق كبيرة", tablespoon: "ملعقة كبيرة", liter: "لتر", fillets: "فيليه",
+};
+
+function hydrateLegacyRecipe(recipe: InsertRecipe): InsertRecipe {
+  const arabic = legacyArabic[recipe.recipeId] ?? { name: recipe.name, description: recipe.description };
+  return {
+    ...recipe,
+    nameArabic: arabic.name,
+    descriptionArabic: arabic.description,
+    ingredients: recipe.ingredients.map((item) => ({
+      ...item,
+      nameArabic: ingredientArabic[item.name] ?? item.name,
+      unitArabic: legacyArabicUnits[item.unit] ?? item.unit,
+      groupArabic: item.group,
+      notesArabic: item.notes,
+      substitutions: item.substitutions.map((sub) => ({
+        ...sub,
+        ingredientArabic: ingredientArabic[sub.ingredient] ?? sub.ingredient,
+        unitArabic: legacyArabicUnits[sub.unit] ?? sub.unit,
+        effectArabic: sub.effect,
+      })),
+    })),
+    steps: recipe.steps.map((item) => ({
+      ...item,
+      titleArabic: `الخطوة ${item.stepNumber}`,
+      instructionArabic: item.instruction,
+      heatLevelArabic: item.heatLevel,
+      cookingCueArabic: item.cookingCue,
+    })),
+  };
+}
+
+const recipeSeed: InsertRecipe[] = [
+  ...legacyRecipeSeed.map(hydrateLegacyRecipe),
+  ...egyptianRecipeSeed,
+];
+
 export async function ensureRecipeSeeded() {
-  const existing = await db.select({ recipeId: recipesTable.recipeId }).from(recipesTable).limit(1);
-  if (existing.length === 0) {
-    await db.insert(recipesTable).values(recipeSeed).onConflictDoNothing();
+  const existing = await db.select({ recipeId: recipesTable.recipeId, nameArabic: recipesTable.nameArabic }).from(recipesTable);
+  const existingIds = new Set(existing.map((row) => row.recipeId));
+  const missing = recipeSeed.filter((recipe) => !existingIds.has(recipe.recipeId));
+  if (missing.length > 0) {
+    await db.insert(recipesTable).values(missing).onConflictDoNothing();
+  }
+  const needsArabic = existing.filter((row) => !row.nameArabic).map((row) => row.recipeId);
+  for (const recipe of recipeSeed.filter((item) => needsArabic.includes(item.recipeId))) {
+    const { recipeId, ...values } = recipe;
+    await db.update(recipesTable).set(values).where(eq(recipesTable.recipeId, recipeId));
   }
 }

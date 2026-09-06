@@ -77,7 +77,9 @@ export const RecipeSummaryDifficulty = {
 export interface RecipeSummary {
   recipeId: string;
   name: string;
+  nameArabic?: string;
   description: string;
+  descriptionArabic?: string;
   cuisine: string;
   category: string;
   dishType: string;
@@ -100,32 +102,45 @@ export interface RecipeSearchResponse {
 
 export interface RecipeSubstitution {
   ingredient: string;
+  ingredientArabic?: string;
   quantity: number;
   unit: string;
+  unitArabic?: string;
   effect: string;
+  effectArabic?: string;
 }
 
 export interface RecipeIngredient {
   ingredientId: string;
   name: string;
+  nameArabic?: string;
   quantity: number;
   unit: string;
+  unitArabic?: string;
   optional: boolean;
   group: string;
+  groupArabic?: string;
   /** @nullable */
   notes?: string | null;
+  /** @nullable */
+  notesArabic?: string | null;
   substitutions: RecipeSubstitution[];
 }
 
 export interface RecipeStep {
   stepNumber: number;
   title: string;
+  titleArabic?: string;
   instruction: string;
+  instructionArabic?: string;
   /** @nullable */
   durationMinutes: number | null;
   /** @nullable */
   heatLevel: string | null;
+  /** @nullable */
+  heatLevelArabic?: string | null;
   cookingCue: string;
+  cookingCueArabic?: string;
 }
 
 export type Recipe = RecipeSummary & {

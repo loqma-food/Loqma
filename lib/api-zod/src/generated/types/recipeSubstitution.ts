@@ -8,7 +8,10 @@
 
 export interface RecipeSubstitution {
   ingredient: string;
+  ingredientArabic?: string;
   quantity: number;
   unit: string;
+  unitArabic?: string;
   effect: string;
+  effectArabic?: string;
 }

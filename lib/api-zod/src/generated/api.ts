@@ -107,7 +107,9 @@ export const ListRecipesResponse = zod.object({
   "results": zod.array(zod.object({
   "recipeId": zod.string(),
   "name": zod.string(),
+  "nameArabic": zod.string().optional(),
   "description": zod.string(),
+  "descriptionArabic": zod.string().optional(),
   "cuisine": zod.string(),
   "category": zod.string(),
   "dishType": zod.string(),
@@ -139,7 +141,9 @@ export const GetRecipeParams = zod.object({
 export const GetRecipeResponse = zod.object({
   "recipeId": zod.string(),
   "name": zod.string(),
+  "nameArabic": zod.string().optional(),
   "description": zod.string(),
+  "descriptionArabic": zod.string().optional(),
   "cuisine": zod.string(),
   "category": zod.string(),
   "dishType": zod.string(),
@@ -159,25 +163,36 @@ export const GetRecipeResponse = zod.object({
   "ingredients": zod.array(zod.object({
   "ingredientId": zod.string(),
   "name": zod.string(),
+  "nameArabic": zod.string().optional(),
   "quantity": zod.number(),
   "unit": zod.string(),
+  "unitArabic": zod.string().optional(),
   "optional": zod.boolean(),
   "group": zod.string(),
+  "groupArabic": zod.string().optional(),
   "notes": zod.string().nullish(),
+  "notesArabic": zod.string().nullish(),
   "substitutions": zod.array(zod.object({
   "ingredient": zod.string(),
+  "ingredientArabic": zod.string().optional(),
   "quantity": zod.number(),
   "unit": zod.string(),
-  "effect": zod.string()
+  "unitArabic": zod.string().optional(),
+  "effect": zod.string(),
+  "effectArabic": zod.string().optional()
 }))
 })),
   "steps": zod.array(zod.object({
   "stepNumber": zod.number().int(),
   "title": zod.string(),
+  "titleArabic": zod.string().optional(),
   "instruction": zod.string(),
+  "instructionArabic": zod.string().optional(),
   "durationMinutes": zod.number().int().nullable(),
   "heatLevel": zod.string().nullable(),
-  "cookingCue": zod.string()
+  "heatLevelArabic": zod.string().nullish(),
+  "cookingCue": zod.string(),
+  "cookingCueArabic": zod.string().optional()
 }))
 }))
 

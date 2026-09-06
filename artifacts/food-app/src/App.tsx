@@ -7,6 +7,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { FavoritesProvider } from '@/lib/favorites-context';
+import { LanguageProvider, useLanguage } from '@/lib/language-context';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import EatOut from '@/pages/eat-out';
@@ -80,16 +81,25 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <FavoritesProvider>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-            <Router />
-          </WouterRouter>
-          <Toaster />
-        </TooltipProvider>
-      </FavoritesProvider>
+      <LanguageProvider>
+        <FavoritesProvider>
+          <LocalizedApp />
+        </FavoritesProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
+}
+
+function LocalizedApp() {
+  const { direction, language } = useLanguage();
+  return <div dir={direction} lang={language} className="min-h-[100dvh]">
+    <TooltipProvider>
+      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <Router />
+      </WouterRouter>
+      <Toaster />
+    </TooltipProvider>
+  </div>;
 }
 
 export default App;

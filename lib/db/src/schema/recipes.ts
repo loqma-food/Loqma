@@ -4,35 +4,48 @@ import { z } from "zod/v4";
 
 export type RecipeSubstitutionRecord = {
   ingredient: string;
+  ingredientArabic?: string;
   quantity: number;
   unit: string;
+  unitArabic?: string;
   effect: string;
+  effectArabic?: string;
 };
 
 export type RecipeIngredientRecord = {
   ingredientId: string;
   name: string;
+  nameArabic?: string;
   quantity: number;
   unit: string;
+  unitArabic?: string;
   optional: boolean;
   group: string;
+  groupArabic?: string;
   notes: string | null;
+  notesArabic?: string | null;
   substitutions: RecipeSubstitutionRecord[];
 };
 
 export type RecipeStepRecord = {
   stepNumber: number;
   title: string;
+  titleArabic?: string;
   instruction: string;
+  instructionArabic?: string;
   durationMinutes: number | null;
   heatLevel: string | null;
+  heatLevelArabic?: string | null;
   cookingCue: string;
+  cookingCueArabic?: string;
 };
 
 export const recipesTable = pgTable("recipes", {
   recipeId: text("recipe_id").primaryKey(),
   name: text("name").notNull(),
+  nameArabic: text("name_arabic").notNull().default(""),
   description: text("description").notNull(),
+  descriptionArabic: text("description_arabic").notNull().default(""),
   cuisine: text("cuisine").notNull(),
   category: text("category").notNull(),
   dishType: text("dish_type").notNull(),

@@ -15,7 +15,9 @@ function toRecipeResponse(recipe: Recipe) {
   return {
     recipeId: recipe.recipeId,
     name: recipe.name,
+    nameArabic: recipe.nameArabic,
     description: recipe.description,
+    descriptionArabic: recipe.descriptionArabic,
     cuisine: recipe.cuisine,
     category: recipe.category,
     dishType: recipe.dishType,
@@ -54,7 +56,9 @@ router.get("/recipes", async (req, res): Promise<void> => {
       const pattern = `%${searchQuery}%`;
       conditions.push(or(
         ilike(recipesTable.name, pattern),
+        ilike(recipesTable.nameArabic, pattern),
         ilike(recipesTable.description, pattern),
+        ilike(recipesTable.descriptionArabic, pattern),
         ilike(recipesTable.cuisine, pattern),
         ilike(recipesTable.category, pattern),
         ilike(recipesTable.mainIngredient, pattern),
@@ -75,7 +79,7 @@ router.get("/recipes", async (req, res): Promise<void> => {
       .select()
       .from(recipesTable)
       .where(conditions.length ? and(...conditions) : undefined)
-      .orderBy(asc(recipesTable.name));
+      .orderBy(sql`CASE WHEN ${recipesTable.cuisine} = 'Egyptian' THEN 0 ELSE 1 END`, asc(recipesTable.name));
     const results = recipes.map((recipe) => {
       const { prepTimeMinutes, cookTimeMinutes, totalTimeMinutes, ingredients, steps, ...summary } = toRecipeResponse(recipe);
       void prepTimeMinutes;

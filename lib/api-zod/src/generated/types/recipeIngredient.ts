@@ -10,11 +10,16 @@ import type { RecipeSubstitution } from './recipeSubstitution';
 export interface RecipeIngredient {
   ingredientId: string;
   name: string;
+  nameArabic?: string;
   quantity: number;
   unit: string;
+  unitArabic?: string;
   optional: boolean;
   group: string;
+  groupArabic?: string;
   /** @nullable */
   notes?: string | null;
+  /** @nullable */
+  notesArabic?: string | null;
   substitutions: RecipeSubstitution[];
 }

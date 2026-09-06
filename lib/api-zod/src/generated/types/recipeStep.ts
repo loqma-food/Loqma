@@ -9,10 +9,15 @@
 export interface RecipeStep {
   stepNumber: number;
   title: string;
+  titleArabic?: string;
   instruction: string;
+  instructionArabic?: string;
   /** @nullable */
   durationMinutes: number | null;
   /** @nullable */
   heatLevel: string | null;
+  /** @nullable */
+  heatLevelArabic?: string | null;
   cookingCue: string;
+  cookingCueArabic?: string;
 }

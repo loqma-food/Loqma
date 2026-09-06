@@ -10,7 +10,9 @@ import type { RecipeSummaryDifficulty } from './recipeSummaryDifficulty';
 export interface RecipeSummary {
   recipeId: string;
   name: string;
+  nameArabic?: string;
   description: string;
+  descriptionArabic?: string;
   cuisine: string;
   category: string;
   dishType: string;

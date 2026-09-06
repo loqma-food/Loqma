@@ -325,7 +325,11 @@ components:
           type: string
         name:
           type: string
+        nameArabic:
+          type: string
         description:
+          type: string
+        descriptionArabic:
           type: string
         cuisine:
           type: string
@@ -383,15 +387,23 @@ components:
           type: string
         name:
           type: string
+        nameArabic:
+          type: string
         quantity:
           type: number
         unit:
+          type: string
+        unitArabic:
           type: string
         optional:
           type: boolean
         group:
           type: string
+        groupArabic:
+          type: string
         notes:
+          type: ["string", "null"]
+        notesArabic:
           type: ["string", "null"]
         substitutions:
           type: array
@@ -403,11 +415,17 @@ components:
       properties:
         ingredient:
           type: string
+        ingredientArabic:
+          type: string
         quantity:
           type: number
         unit:
           type: string
+        unitArabic:
+          type: string
         effect:
+          type: string
+        effectArabic:
           type: string
     RecipeStep:
       type: object
@@ -417,12 +435,20 @@ components:
           type: integer
         title:
           type: string
+        titleArabic:
+          type: string
         instruction:
+          type: string
+        instructionArabic:
           type: string
         durationMinutes:
           type: ["integer", "null"]
         heatLevel:
           type: ["string", "null"]
+        heatLevelArabic:
+          type: ["string", "null"]
         cookingCue:
+          type: string
+        cookingCueArabic:
           type: string
 

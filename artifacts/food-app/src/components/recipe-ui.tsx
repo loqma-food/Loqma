@@ -1,7 +1,8 @@
-import { ArrowRight, Clock3, Flame, Leaf, Minus, Plus, RotateCcw, Search, Sparkles, Utensils } from 'lucide-react';
+import { ArrowRight, Clock3, Flame, Heart, Leaf, Minus, Plus, RotateCcw, Search, Sparkles, Utensils } from 'lucide-react';
 import { Link } from 'wouter';
 import { useState } from 'react';
 import type { Recipe, RecipeIngredient, RecipeSummary, RecipeStep } from '@workspace/api-client-react';
+import { useFavorites } from '@/lib/favorites-context';
 
 export function RecipeImage({ recipe, className = '' }: { recipe: RecipeSummary; className?: string }) {
   const [imageFailed, setImageFailed] = useState(false);
@@ -24,7 +25,10 @@ export function RecipeMeta({ recipe, compact = false }: { recipe: RecipeSummary;
 }
 
 export function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
-  return <Link href={`/recipes/${recipe.recipeId}`} className="group block overflow-hidden rounded-[1.35rem] border border-border bg-card shadow-sm transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-[var(--shadow-md)]" data-testid={`card-recipe-${recipe.recipeId}`}>
+  const { isRecipeFavorite, toggleRecipe } = useFavorites();
+  const saved = isRecipeFavorite(recipe.recipeId);
+  return <article className="group relative overflow-hidden rounded-[1.35rem] border border-border bg-card shadow-sm transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-[var(--shadow-md)]" data-testid={`card-recipe-${recipe.recipeId}`}>
+    <Link href={`/recipes/${recipe.recipeId}`} className="block">
     <div className="relative h-48 overflow-hidden">
       <RecipeImage recipe={recipe} className="h-full w-full transition duration-500 group-hover:scale-105" />
       <span className="absolute left-3 top-3 rounded-full bg-card/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.13em] text-foreground backdrop-blur-sm">{recipe.mealType}</span>
@@ -36,7 +40,11 @@ export function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
       <p className="mt-2 line-clamp-2 text-sm leading-5 text-muted-foreground">{recipe.description}</p>
       <div className="mt-4 flex items-center justify-between gap-3"><RecipeMeta recipe={recipe} compact /><ArrowRight className="h-4 w-4 text-primary transition group-hover:translate-x-1" /></div>
     </div>
-  </Link>;
+    </Link>
+    <button type="button" onClick={() => toggleRecipe(recipe)} className="touch-target absolute right-3 top-3 flex items-center justify-center rounded-full bg-card/95 text-foreground shadow-sm backdrop-blur transition hover:text-primary" aria-label={saved ? `Remove ${recipe.name} from favorites` : `Save ${recipe.name}`} data-testid={`button-save-recipe-${recipe.recipeId}`}>
+      <Heart className={`h-4 w-4 ${saved ? 'fill-primary text-primary' : ''}`} />
+    </button>
+  </article>;
 }
 
 export function RecipeSkeleton() {
@@ -72,5 +80,5 @@ export function ErrorState({ onRetry, detail = 'Something got tangled in the kit
 }
 
 export function SearchBox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
-  return <label className="flex min-h-14 items-center gap-3 rounded-2xl border border-border bg-card px-4 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15"><Search className="h-5 w-5 shrink-0 text-primary" /><span className="sr-only">Search recipes</span><input value={value} onChange={(event) => onChange(event.target.value)} placeholder="Search a recipe, ingredient, or cuisine" className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground" data-testid="input-recipe-search" /></label>;
+  return <label className="flex min-h-14 items-center gap-3 rounded-2xl border border-border bg-card px-4 shadow-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15"><Search className="h-5 w-5 shrink-0 text-primary" /><span className="sr-only">Search recipes</span><input value={value} onChange={(event) => onChange(event.target.value)} placeholder="Search a recipe, ingredient, or cuisine" enterKeyHint="search" className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground" data-testid="input-recipe-search" /></label>;
 }

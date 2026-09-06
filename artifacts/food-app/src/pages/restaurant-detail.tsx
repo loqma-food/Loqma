@@ -3,6 +3,7 @@ import { Link, useParams } from 'wouter';
 import type { ReactNode } from 'react';
 import type { Restaurant } from '@workspace/api-client-react';
 import { SavorlyShell } from '@/components/savorly-shell';
+import { useFavorites } from '@/lib/favorites-context';
 
 function unavailable(value: unknown): value is null | undefined {
   return value === null || value === undefined || value === '';
@@ -11,9 +12,10 @@ function unavailable(value: unknown): value is null | undefined {
 export default function RestaurantDetail() {
   const { id } = useParams<{ id: string }>();
   const restaurant = readRestaurant(id);
+  const { isRestaurantFavorite, toggleRestaurant } = useFavorites();
   if (!restaurant) return <SavorlyShell><div className="mx-auto max-w-xl px-5 py-20 text-center"><p className="text-xs font-bold uppercase tracking-[.16em] text-primary">Restaurant details</p><h1 className="mt-4 font-display text-4xl font-bold">This place is not in your current shortlist.</h1><p className="mt-4 text-muted-foreground">Go back to your nearby results to choose a live restaurant.</p><Link href="/restaurants" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 font-bold text-primary-foreground" data-testid="link-back-to-results"><ArrowLeft className="h-4 w-4" /> Back to results</Link></div></SavorlyShell>;
-  return <SavorlyShell>
-    <div className="mx-auto max-w-4xl px-5 pb-28 md:px-8 md:pb-16">
+   return <SavorlyShell>
+     <div className="mobile-page mx-auto max-w-4xl px-5 pb-32 md:px-8 md:pb-16">
       <Link href="/restaurants" className="mb-7 inline-flex items-center gap-2 text-sm font-bold text-muted-foreground transition hover:text-foreground" data-testid="link-back-to-results"><ArrowLeft className="h-4 w-4" /> Back to nearby places</Link>
       <div className="overflow-hidden rounded-[2rem] border border-border bg-card shadow-md">
         <div className="relative aspect-[1.8/1] max-h-[28rem] overflow-hidden bg-secondary">
@@ -23,7 +25,7 @@ export default function RestaurantDetail() {
         <div className="p-6 sm:p-10">
           <div className="flex flex-wrap items-start justify-between gap-5">
             <div><p className="text-xs font-bold uppercase tracking-[.16em] text-primary">{restaurant.cuisine ?? 'Information unavailable'}</p><h1 className="mt-2 font-display text-5xl font-bold leading-[.9] tracking-[-.05em] sm:text-7xl" data-testid="text-detail-name">{restaurant.name}</h1><p className="mt-4 max-w-xl leading-7 text-muted-foreground">{restaurant.description ?? 'Information unavailable'}</p></div>
-            <button className="flex h-12 w-12 items-center justify-center rounded-full border border-border transition hover:border-primary hover:text-primary" aria-label={`Save ${restaurant.name}`} data-testid="button-save-detail"><Heart className="h-5 w-5" /></button>
+             <button type="button" onClick={() => toggleRestaurant(restaurant)} className="touch-target flex items-center justify-center rounded-full border border-border transition hover:border-primary hover:text-primary" aria-label={isRestaurantFavorite(restaurant.id) ? `Remove ${restaurant.name} from favorites` : `Save ${restaurant.name}`} data-testid="button-save-detail"><Heart className={`h-5 w-5 ${isRestaurantFavorite(restaurant.id) ? 'fill-primary text-primary' : ''}`} /></button>
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
             {!unavailable(restaurant.rating) ? <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/35 px-3 py-2 text-sm font-bold"><Star className="h-4 w-4 fill-accent text-accent-foreground" /> {restaurant.rating.toFixed(1)}{restaurant.reviewCount ? ` · ${restaurant.reviewCount} reviews` : ''}</span> : <Pill>Information unavailable</Pill>}

@@ -28,7 +28,7 @@ export default function Restaurants() {
   const { data, isLoading, isError, refetch } = useListRestaurants(params, { query: { queryKey: getListRestaurantsQueryKey(params) } });
   const results = data?.results ?? [];
   return <SavorlyShell>
-    <div className="mx-auto max-w-6xl px-5 pb-28 md:px-8 md:pb-16">
+     <div className="mobile-page mx-auto max-w-6xl px-5 pb-32 md:px-8 md:pb-16">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <Link href="/eat-out" className="mb-7 inline-flex items-center gap-2 text-sm font-bold text-muted-foreground transition hover:text-foreground" data-testid="link-back-to-eat-out"><ArrowLeft className="h-4 w-4" /> Adjust your search</Link>
@@ -37,12 +37,13 @@ export default function Restaurants() {
         </div>
         <button onClick={() => setFiltersOpen((value) => !value)} className="inline-flex min-h-12 items-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-bold transition hover:border-primary hover:text-primary" data-testid="button-toggle-filters"><Filter className="h-4 w-4" /> Filters {results.length ? <span className="rounded-full bg-secondary px-2 py-0.5 text-xs">{results.length}</span> : null}</button>
       </div>
-      <div className={`mt-8 overflow-hidden rounded-[1.4rem] border border-border bg-card transition-all ${filtersOpen ? 'max-h-96 p-4 opacity-100 sm:p-5' : 'max-h-0 border-transparent p-0 opacity-0'}`}>
+      <div className={`mt-8 overflow-hidden rounded-[1.4rem] border border-border bg-card transition-all ${filtersOpen ? 'max-h-96 p-4 opacity-100 sm:p-5' : 'max-h-0 border-transparent p-0 opacity-0'}`} data-mobile-overlay={filtersOpen ? 'true' : undefined}>
         <div className="grid gap-4 sm:grid-cols-[1.5fr_1fr_auto_auto] sm:items-end">
           <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Search<input value={query} onChange={(event) => setQuery(event.target.value)} className="mt-2 min-h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-primary" placeholder="Cuisine or mood" data-testid="input-filter-search" /></label>
           <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Cuisine<select value={cuisine} onChange={(event) => setCuisine(event.target.value === 'Any cuisine' ? '' : event.target.value)} className="mt-2 min-h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-primary" data-testid="select-cuisine">{cuisines.map((item) => <option key={item}>{item}</option>)}</select></label>
           <button onClick={() => setOpenNow((value) => !value)} className={`min-h-11 rounded-xl border px-3 text-sm font-bold transition ${openNow ? 'border-primary bg-primary/10 text-primary' : 'border-input'}`} data-testid="button-filter-open">{openNow ? 'Open now' : 'Any hours'}</button>
           <button onClick={() => setVegetarian((value) => !value)} className={`min-h-11 rounded-xl border px-3 text-sm font-bold transition ${vegetarian ? 'border-primary bg-primary/10 text-primary' : 'border-input'}`} data-testid="button-filter-vegetarian">{vegetarian ? 'Vegetarian' : 'Any menu'}</button>
+          <button type="button" onClick={() => setFiltersOpen(false)} className="min-h-11 rounded-xl border border-input px-3 text-sm font-bold sm:hidden" data-mobile-overlay-close>Done</button>
         </div>
       </div>
       <div className="mt-8 flex items-center justify-between gap-4 text-sm text-muted-foreground">

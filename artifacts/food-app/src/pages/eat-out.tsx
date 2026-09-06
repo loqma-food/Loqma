@@ -38,7 +38,7 @@ export default function EatOut() {
     setLocation(`/restaurants?${params.toString()}`);
   };
   return <SavorlyShell>
-    <div className="mx-auto max-w-3xl px-5 pb-28 md:px-8 md:pb-16">
+     <div className="mobile-page mx-auto max-w-3xl px-5 pb-32 md:px-8 md:pb-16">
       <div className="mb-10">
         <SectionEyebrow>Eat out</SectionEyebrow>
         <h1 className="max-w-2xl font-display text-5xl font-bold leading-[.92] tracking-[-0.05em] sm:text-7xl">Let’s find your <span className="text-primary">kind</span> of night.</h1>
@@ -73,10 +73,10 @@ export default function EatOut() {
 
         <section className="rounded-[1.7rem] border border-border bg-card p-5 shadow-sm sm:p-7">
           <div><p className="text-xs font-bold uppercase tracking-[.14em] text-primary">03 / Optional</p><h2 className="mt-2 font-display text-2xl font-bold">Any words in mind?</h2></div>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try “noodles”, “date night”, or “patio”" className="mt-5 min-h-14 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground/65 focus:border-primary focus:ring-4 focus:ring-primary/10" data-testid="input-search-preference" />
+           <input value={query} onChange={(event) => setQuery(event.target.value)} enterKeyHint="search" placeholder="Try “noodles”, “date night”, or “patio”" className="mt-5 min-h-14 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground/65 focus:border-primary focus:ring-4 focus:ring-primary/10" data-testid="input-search-preference" />
         </section>
       </div>
-      <div className="sticky bottom-16 mt-8 flex items-center justify-between gap-4 rounded-[1.4rem] border border-border bg-background/90 p-3 backdrop-blur-xl md:bottom-5">
+       <div className="safe-bottom sticky bottom-16 mt-8 flex items-center justify-between gap-4 rounded-[1.4rem] border border-border bg-background/90 p-3 backdrop-blur-xl md:bottom-5">
         <div className="hidden pl-3 sm:block"><LocationPill>{selectedLocation.label}</LocationPill></div>
         <button onClick={findPlaces} className="ml-auto inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-primary px-7 text-base font-bold text-primary-foreground shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" data-testid="button-find-places">Show me places <ArrowRight className="h-5 w-5" /></button>
       </div>

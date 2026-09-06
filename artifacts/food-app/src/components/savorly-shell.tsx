@@ -1,4 +1,4 @@
-import { Compass, Home, MapPin, Utensils, X } from 'lucide-react';
+import { Compass, Heart, Home, MapPin, UserRound, Utensils, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useState, type ReactNode } from 'react';
 
@@ -21,8 +21,8 @@ export function BrandMark() {
 
 function ChefNudge({ onDismiss }: { onDismiss: () => void }) {
   return (
-    <aside className="animate-rise-in fixed bottom-20 right-4 z-40 w-[min(19rem,calc(100vw-2rem))] rounded-[1.4rem] border border-secondary-border bg-sidebar p-4 text-sidebar-foreground shadow-[0_18px_40px_hsl(164_35%_12%/.22)] md:bottom-6 md:right-6" data-testid="card-mini-chef">
-      <button onClick={onDismiss} className="absolute right-3 top-3 rounded-full p-1.5 text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground" aria-label="Dismiss Mini Chef" data-testid="button-dismiss-mini-chef">
+    <aside className="animate-rise-in fixed bottom-[calc(4.9rem+env(safe-area-inset-bottom))] right-4 z-40 w-[min(19rem,calc(100vw-2rem))] rounded-[1.4rem] border border-secondary-border bg-sidebar p-4 text-sidebar-foreground shadow-[0_18px_40px_hsl(164_35%_12%/.22)] md:bottom-6 md:right-6" data-testid="card-mini-chef" data-mobile-overlay="true">
+      <button onClick={onDismiss} className="touch-target absolute right-2 top-2 rounded-full p-1.5 text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground" aria-label="Dismiss Mini Chef" data-mobile-overlay-close data-testid="button-dismiss-mini-chef">
         <X className="h-4 w-4" />
       </button>
       <div className="mb-3 flex items-center gap-3">
@@ -44,15 +44,17 @@ function ChefNudge({ onDismiss }: { onDismiss: () => void }) {
 
 export function SavorlyShell({ children, showChef = false }: SavorlyShellProps) {
   const [location] = useLocation();
-  const [chefOpen, setChefOpen] = useState(showChef);
+  const [chefOpen, setChefOpen] = useState(false);
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/cook', label: 'Cook', icon: Utensils },
     { href: '/eat-out', label: 'Eat out', icon: Compass },
+    { href: '/favorites', label: 'Favorites', icon: Heart },
+    { href: '/profile', label: 'Profile', icon: UserRound },
   ];
   return (
-    <div className="grain min-h-[100dvh] bg-background">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 md:px-8 md:py-7">
+    <div className="grain min-h-[100dvh] overflow-x-hidden bg-background">
+      <header className="safe-top mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 md:px-8 md:py-7">
         <Link href="/" className="transition hover:opacity-80" data-testid="link-brand-home"><BrandMark /></Link>
         <div className="flex items-center gap-2">
           <span className="hidden rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground sm:inline-flex">Every Bite Has a Story</span>
@@ -62,11 +64,11 @@ export function SavorlyShell({ children, showChef = false }: SavorlyShellProps) 
         </div>
       </header>
       <main>{children}</main>
-      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-background/90 px-5 py-2 backdrop-blur-xl md:hidden" aria-label="Primary navigation">
-        <div className="mx-auto flex max-w-md items-center justify-around">
+      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-background/95 px-2 pt-1.5 backdrop-blur-xl md:hidden" aria-label="Primary navigation">
+        <div className="mx-auto flex max-w-md items-stretch justify-around gap-0.5">
           {navItems.map(({ href, label, icon: Icon }) => {
-            const active = location === href || (href === '/cook' && location.startsWith('/recipes'));
-            return <Link key={href} href={href} className={`flex min-w-20 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-bold transition ${active ? 'text-primary' : 'text-muted-foreground'}`} data-testid={`link-nav-${label.toLowerCase().replace(' ', '-')}`}>
+            const active = location === href || (href === '/cook' && location.startsWith('/recipes')) || (href === '/eat-out' && location.startsWith('/restaurants'));
+            return <Link key={href} href={href} className={`flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1.5 text-[10px] font-bold transition ${active ? 'text-primary' : 'text-muted-foreground'}`} data-testid={`link-nav-${label.toLowerCase().replace(' ', '-')}`}>
               <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 1.8} />
               {label}
             </Link>;

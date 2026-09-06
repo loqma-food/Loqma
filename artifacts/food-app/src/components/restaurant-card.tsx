@@ -1,12 +1,15 @@
 import { ArrowUpRight, Clock3, Heart, MapPin, Star } from 'lucide-react';
 import type { Restaurant } from '@workspace/api-client-react';
 import { Link } from 'wouter';
+import { useFavorites } from '@/lib/favorites-context';
 
 function unavailable(value: unknown): value is null | undefined {
   return value === null || value === undefined || value === '';
 }
 
 export function RestaurantCard({ restaurant, index = 0 }: { restaurant: Restaurant; index?: number }) {
+  const { isRestaurantFavorite, toggleRestaurant } = useFavorites();
+  const saved = isRestaurantFavorite(restaurant.id);
   const distance = unavailable(restaurant.distanceMeters) ? null : restaurant.distanceMeters < 1000 ? `${Math.round(restaurant.distanceMeters)} m` : `${(restaurant.distanceMeters / 1000).toFixed(1)} km`;
   const hasImage = !unavailable(restaurant.imageUrl);
   return (
@@ -17,8 +20,8 @@ export function RestaurantCard({ restaurant, index = 0 }: { restaurant: Restaura
           {restaurant.isOpenNow === true && <span className="rounded-full bg-card/95 px-2.5 py-1 text-[11px] font-bold text-secondary-foreground backdrop-blur">Open now</span>}
           {restaurant.isOpenNow === false && <span className="rounded-full bg-foreground/80 px-2.5 py-1 text-[11px] font-bold text-background backdrop-blur">Closed</span>}
         </div>
-        <button className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-card/90 text-foreground shadow-sm backdrop-blur transition hover:scale-105 hover:text-primary" aria-label={`Save ${restaurant.name}`} data-testid={`button-save-restaurant-${restaurant.id}`}>
-          <Heart className="h-4 w-4" />
+         <button type="button" onClick={() => toggleRestaurant(restaurant)} className="touch-target absolute right-2 top-2 flex items-center justify-center rounded-full bg-card/95 text-foreground shadow-sm backdrop-blur transition hover:scale-105 hover:text-primary" aria-label={saved ? `Remove ${restaurant.name} from favorites` : `Save ${restaurant.name}`} data-testid={`button-save-restaurant-${restaurant.id}`}>
+           <Heart className={`h-4 w-4 ${saved ? 'fill-primary text-primary' : ''}`} />
         </button>
       </div>
       <div className="p-4">

@@ -1,12 +1,22 @@
 import { ArrowRight, ChefHat, Compass, Leaf, Sparkles, Utensils } from 'lucide-react';
 import { Link } from 'wouter';
-import { getHealthCheckQueryKey, useHealthCheck } from '@workspace/api-client-react';
+import { useMemo, useState } from 'react';
+import { getHealthCheckQueryKey, getListRecipesQueryKey, useHealthCheck, useListRecipes, type RecipeSearchResponse } from '@workspace/api-client-react';
 import { LocationPill, SectionEyebrow, SavorlyShell } from '@/components/savorly-shell';
+import { RecipeCard, SearchBox } from '@/components/recipe-ui';
 
 export default function Home() {
+  const [search, setSearch] = useState('');
   const { data: health } = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey() } });
+  const recipesQuery = useListRecipes({}, { query: { queryKey: getListRecipesQueryKey({}) } });
+  const recipes = (recipesQuery.data as RecipeSearchResponse | undefined)?.results ?? [];
+  const cuisines = useMemo(() => Array.from(new Set(recipes.map((recipe) => recipe.cuisine))).filter(Boolean).slice(0, 6), [recipes]);
+  const quickRecipes = useMemo(() => recipes.filter((recipe) => recipe.cookingTimeMinutes <= 30).slice(0, 3), [recipes]);
+  const recommendedRecipes = recipes.filter((recipe) => !quickRecipes.some((quick) => quick.recipeId === recipe.recipeId)).slice(0, 3);
+  const featuredRecipe = recipes[0];
+
   return <SavorlyShell showChef>
-    <div className="mx-auto max-w-6xl px-5 pb-28 md:px-8 md:pb-16">
+    <div className="mobile-page mx-auto max-w-6xl px-5 pb-32 md:px-8 md:pb-16">
       <section className="relative overflow-hidden rounded-[2rem] bg-sidebar px-6 py-12 text-sidebar-foreground shadow-md sm:px-10 sm:py-16 md:px-16 md:py-20">
         <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-primary/25 blur-3xl" />
         <div className="absolute -bottom-32 left-1/3 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
@@ -26,40 +36,49 @@ export default function Home() {
         <div className="pointer-events-none absolute bottom-12 right-20 hidden h-28 w-28 rounded-full border-[14px] border-primary/60 md:block" />
       </section>
 
-      <section id="how-it-works" className="grid gap-8 py-20 md:grid-cols-[.8fr_1.2fr] md:items-end md:py-28">
-        <div>
-          <SectionEyebrow>A better way to choose</SectionEyebrow>
-          <h2 className="max-w-sm font-display text-4xl font-bold leading-[.95] tracking-[-0.045em] sm:text-5xl">Less scrolling. More savoring.</h2>
-          <p className="mt-5 max-w-sm leading-7 text-muted-foreground">Live local data, a human-feeling shortlist, and just enough guidance to get you out the door.</p>
-          <p className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-muted-foreground" data-testid="status-loqma-service"><span className={`h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-secondary-foreground' : 'bg-primary'}`} />{health?.status === 'ok' ? 'Local listings are live' : 'Connecting to local listings'}</p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <FeatureCard number="01" icon={Compass} title="Set the scene" body="Tell us your budget, mood, and where you are." />
-          <FeatureCard number="02" icon={Sparkles} title="See what is real" body="Browse nearby places from live local listings." />
-          <FeatureCard number="03" icon={Leaf} title="Follow your appetite" body="Save the one that makes you hungry." />
+      <section className="mt-6">
+        <SearchBox value={search} onChange={setSearch} />
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link href={search.trim() ? `/cook?query=${encodeURIComponent(search.trim())}` : '/cook'} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground"><Utensils className="h-4 w-4" /> Search recipes</Link>
+          <Link href="/eat-out" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-bold"><Compass className="h-4 w-4" /> Find a place</Link>
         </div>
       </section>
 
-      <section className="grid overflow-hidden rounded-[2rem] bg-accent px-6 py-10 sm:px-10 md:grid-cols-[1.1fr_.9fr] md:px-14 md:py-14">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[.16em] text-accent-foreground/65">Tonight's gentle nudge</p>
-          <h2 className="mt-4 max-w-lg font-display text-4xl font-bold leading-[.95] tracking-[-.045em] text-accent-foreground sm:text-5xl">You do not need a perfect plan. Just a promising first bite.</h2>
-          <Link href="/eat-out" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-accent-foreground underline decoration-accent-foreground/30 underline-offset-4 transition hover:decoration-accent-foreground" data-testid="link-browse-tonight">Browse nearby places <ArrowRight className="h-4 w-4" /></Link>
+      <section className="mt-12">
+        <div className="mb-4 flex items-end justify-between gap-4"><div><SectionEyebrow>Quick actions</SectionEyebrow><h2 className="font-display text-3xl font-bold">What sounds good?</h2></div><p className="hidden text-xs font-bold text-muted-foreground sm:block"><span className={`mr-2 inline-block h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-secondary-foreground' : 'bg-primary'}`} />{health?.status === 'ok' ? 'Live listings are ready' : 'Checking local listings'}</p></div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <ActionCard href="/cook" icon={Utensils} title="Cook at home" body="Find a recipe for tonight." />
+          <ActionCard href="/eat-out" icon={Compass} title="Eat out" body="Explore real nearby places." />
+          <ActionCard href="/favorites" icon={Leaf} title="Your favorites" body="Pick up where you left off." />
         </div>
-        <div className="relative mt-10 flex min-h-44 items-center justify-center md:mt-0">
-          <div className="absolute h-40 w-40 rounded-full border-[18px] border-accent-foreground/15" />
-          <div className="absolute h-24 w-24 rounded-full border-[11px] border-accent-foreground/20" />
-          <ChefHat className="relative h-16 w-16 text-accent-foreground/65" strokeWidth={1.2} />
-        </div>
+      </section>
+
+      {featuredRecipe && <section className="mt-12">
+        <div className="mb-4 flex items-end justify-between gap-4"><div><SectionEyebrow>Featured recipe</SectionEyebrow><h2 className="font-display text-3xl font-bold">A good first bite.</h2></div><Link href="/cook" className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-primary">See all <ArrowRight className="h-4 w-4" /></Link></div>
+        <div className="max-w-xl"><RecipeCard recipe={featuredRecipe} /></div>
+      </section>}
+
+      {cuisines.length > 0 && <section className="mt-12">
+        <SectionEyebrow>Explore cuisines</SectionEyebrow>
+        <h2 className="font-display text-3xl font-bold">Follow the flavor.</h2>
+        <div className="mt-4 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">{cuisines.map((cuisine) => <Link key={cuisine} href={`/cook?cuisine=${encodeURIComponent(cuisine)}`} className="shrink-0 rounded-full border border-border bg-card px-4 py-3 text-sm font-bold transition hover:border-primary hover:text-primary">{cuisine}</Link>)}</div>
+      </section>}
+
+      {quickRecipes.length > 0 && <RecipeSection eyebrow="Quick & easy" title="Dinner without the drama." recipes={quickRecipes} />}
+      {recommendedRecipes.length > 0 && <RecipeSection eyebrow="Recommended for you" title="A few worth trying." recipes={recommendedRecipes} />}
+
+      <section className="mt-12 grid overflow-hidden rounded-[2rem] bg-accent px-6 py-9 sm:px-10 md:grid-cols-[1.1fr_.9fr] md:px-14 md:py-14">
+        <div><SectionEyebrow>Mini Chef</SectionEyebrow><h2 className="mt-1 max-w-lg font-display text-4xl font-bold leading-[.95] tracking-[-.045em] text-accent-foreground sm:text-5xl">A little help when your appetite is undecided.</h2><p className="mt-4 max-w-md text-sm leading-6 text-accent-foreground/75">Open Mini Chef from the top-right button whenever you want a gentle nudge.</p></div>
+        <div className="relative mt-8 flex min-h-36 items-center justify-center md:mt-0"><div className="absolute h-32 w-32 rounded-full border-[16px] border-accent-foreground/15" /><ChefHat className="relative h-14 w-14 text-accent-foreground/65" strokeWidth={1.2} /></div>
       </section>
     </div>
   </SavorlyShell>;
 }
 
-function FeatureCard({ number, icon: Icon, title, body }: { number: string; icon: typeof Compass; title: string; body: string }) {
-  return <div className="rounded-[1.35rem] border border-border bg-card p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-    <div className="flex items-center justify-between"><span className="text-xs font-bold text-primary">{number}</span><Icon className="h-5 w-5 text-primary" /></div>
-    <h3 className="mt-8 font-display text-xl font-bold">{title}</h3>
-    <p className="mt-2 text-sm leading-5 text-muted-foreground">{body}</p>
-  </div>;
+function ActionCard({ href, icon: Icon, title, body }: { href: string; icon: typeof Compass; title: string; body: string }) {
+  return <Link href={href} className="rounded-[1.35rem] border border-border bg-card p-5 shadow-sm transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"><Icon className="h-5 w-5 text-primary" /><h3 className="mt-7 font-display text-xl font-bold">{title}</h3><p className="mt-2 text-sm leading-5 text-muted-foreground">{body}</p></Link>;
+}
+
+function RecipeSection({ eyebrow, title, recipes }: { eyebrow: string; title: string; recipes: NonNullable<RecipeSearchResponse['results']> }) {
+  return <section className="mt-12"><div className="mb-4 flex items-end justify-between gap-4"><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className="font-display text-3xl font-bold">{title}</h2></div><Link href="/cook" className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-primary">Explore <ArrowRight className="h-4 w-4" /></Link></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{recipes.map((recipe) => <RecipeCard key={recipe.recipeId} recipe={recipe} />)}</div></section>;
 }

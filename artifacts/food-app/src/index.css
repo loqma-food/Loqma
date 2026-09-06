@@ -160,7 +160,9 @@
 }
 .font-display { font-family: var(--app-font-serif); }
 .text-balance { text-wrap: balance; }
+.safe-top { padding-top: max(.75rem, env(safe-area-inset-top)); }
 .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+.mobile-page { min-width: 0; }
 .scrollbar-hide { scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .recipe-image { background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent) / .6)); }

@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
 import { db, recipesTable, type InsertRecipe } from "@workspace/db";
 import { egyptianRecipeSeed } from "./egyptian-recipe-seed";
+import { recipeExpansionSeed } from "./recipe-expansion-seed";
 
 const legacyRecipeSeed: InsertRecipe[] = [
   {
@@ -279,6 +279,7 @@ function hydrateLegacyRecipe(recipe: InsertRecipe): InsertRecipe {
 const recipeSeed: InsertRecipe[] = [
   ...legacyRecipeSeed.map(hydrateLegacyRecipe),
   ...egyptianRecipeSeed,
+  ...recipeExpansionSeed,
 ];
 
 export async function ensureRecipeSeeded() {
@@ -287,9 +288,5 @@ export async function ensureRecipeSeeded() {
   const missing = recipeSeed.filter((recipe) => !existingIds.has(recipe.recipeId));
   if (missing.length > 0) {
     await db.insert(recipesTable).values(missing).onConflictDoNothing();
-  }
-  for (const recipe of recipeSeed.filter((item) => existingIds.has(item.recipeId))) {
-    const { recipeId, ...values } = recipe;
-    await db.update(recipesTable).set(values).where(eq(recipesTable.recipeId, recipeId));
   }
 }

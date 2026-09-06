@@ -1,2 +1,3 @@
 - [Live restaurant data](live-restaurant-data.md) — preserve source truth, use resilient public endpoints, and never infer missing restaurant details.
 - [Recipe data integrity](recipe-data.md) — keep recipes structured and persistent, with explicit image mappings and neutral fallback behavior.
+- [Egypt-first bilingual content](egyptian-localization.md) — keep Egyptian seed records bilingual, explicit, and idempotently synchronized.

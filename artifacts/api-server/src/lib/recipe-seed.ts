@@ -288,8 +288,7 @@ export async function ensureRecipeSeeded() {
   if (missing.length > 0) {
     await db.insert(recipesTable).values(missing).onConflictDoNothing();
   }
-  const needsArabic = existing.filter((row) => !row.nameArabic).map((row) => row.recipeId);
-  for (const recipe of recipeSeed.filter((item) => needsArabic.includes(item.recipeId))) {
+  for (const recipe of recipeSeed.filter((item) => existingIds.has(item.recipeId))) {
     const { recipeId, ...values } = recipe;
     await db.update(recipesTable).set(values).where(eq(recipesTable.recipeId, recipeId));
   }

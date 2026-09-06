@@ -6,6 +6,11 @@ const units: Record<string, string> = {
   cloves: "فصوص", clove: "فص", cup: "كوب", cups: "أكواب", piece: "قطعة", pieces: "قطع", fillets: "فيليه",
 };
 
+function recipeIllustration(label: string, background: string, accent: string) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520"><rect width="800" height="520" fill="${background}"/><circle cx="650" cy="90" r="150" fill="${accent}" opacity=".22"/><ellipse cx="400" cy="315" rx="245" ry="70" fill="#f5e6ca" opacity=".95"/><path d="M170 300c24 120 107 164 230 164s206-44 230-164" fill="#fff8ea"/><ellipse cx="400" cy="295" rx="230" ry="73" fill="#8b563c"/><ellipse cx="400" cy="280" rx="210" ry="62" fill="#a66b44"/><g fill="${accent}" opacity=".75"><circle cx="280" cy="275" r="18"/><circle cx="340" cy="300" r="15"/><circle cx="420" cy="267" r="17"/><circle cx="490" cy="300" r="16"/></g><text x="400" y="95" text-anchor="middle" font-family="Arial,sans-serif" font-size="48" font-weight="700" fill="#fff8ea">${label}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 function ingredient(
   ingredientId: string,
   name: string,
@@ -54,7 +59,7 @@ export const egyptianRecipeSeed: InsertRecipe[] = [
     cuisine: "Egyptian", category: "Breakfast", dishType: "Breakfast bowl", mainIngredient: "Fava beans",
     cookingTimeMinutes: 20, difficulty: "easy", vegetarian: true, spicy: false, mealType: "Breakfast",
     prepTimeMinutes: 10, cookTimeMinutes: 10, totalTimeMinutes: 20, servings: 4,
-    imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1600&q=85",
+    imageUrl: recipeIllustration("FUL", "#315b4b", "#eb6748"),
     tags: ["egyptian", "breakfast", "vegetarian", "budget-friendly"],
     ingredients: [
       ingredient("fava-beans", "Canned fava beans", "فول مدمس معلب", 800, "g", "Main", "الأساسي", "drained but not rinsed", "مصفى من غير شطف"),

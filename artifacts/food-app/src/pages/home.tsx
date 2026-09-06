@@ -42,7 +42,7 @@ export default function Home() {
         <SearchBox value={search} onChange={setSearch} />
         <div className="mt-3 flex flex-wrap gap-2">
           <Link href={search.trim() ? `/cook?query=${encodeURIComponent(search.trim())}` : '/cook'} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground"><Utensils className="h-4 w-4" /> {t('searchRecipes')}</Link>
-          <Link href="/eat-out" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-bold"><Compass className="h-4 w-4" /> Find a place</Link>
+          <Link href="/eat-out" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-card px-5 text-sm font-bold"><Compass className="h-4 w-4" /> {t('findAPlace')}</Link>
         </div>
       </section>
 

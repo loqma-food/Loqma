@@ -1,7 +1,8 @@
-import { Compass, Heart, Home, MapPin, UserRound, Utensils, X } from 'lucide-react';
+import { Compass, Heart, Home, MapPin, UserRound, Utensils } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useState, type ReactNode } from 'react';
 import { useLanguage } from '@/lib/language-context';
+import { MiniChefPanel } from '@/components/mini-chef';
 
 type SavorlyShellProps = { children: ReactNode; showChef?: boolean };
 
@@ -21,26 +22,9 @@ export function BrandMark() {
 }
 
 function ChefNudge({ onDismiss }: { onDismiss: () => void }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   return (
-    <aside className="animate-rise-in fixed bottom-[calc(4.9rem+env(safe-area-inset-bottom))] right-4 z-40 w-[min(19rem,calc(100vw-2rem))] rounded-[1.4rem] border border-secondary-border bg-sidebar p-4 text-sidebar-foreground shadow-[0_18px_40px_hsl(164_35%_12%/.22)] md:bottom-6 md:right-6" data-testid="card-mini-chef" data-mobile-overlay="true">
-      <button onClick={onDismiss} className="touch-target absolute right-2 top-2 rounded-full p-1.5 text-sidebar-foreground/60 transition hover:bg-sidebar-accent hover:text-sidebar-foreground" aria-label="Dismiss Mini Chef" data-mobile-overlay-close data-testid="button-dismiss-mini-chef">
-        <X className="h-4 w-4" />
-      </button>
-      <div className="mb-3 flex items-center gap-3">
-        <div className="animate-float-soft flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
-          <Utensils className="h-5 w-5" />
-        </div>
-        <div>
-          <p className="text-sm font-bold">{t('miniChef')}</p>
-          <p className="text-xs text-sidebar-foreground/65">{t('miniChefSubtitle')}</p>
-        </div>
-      </div>
-      <p className="pr-3 text-sm leading-5 text-sidebar-foreground/85">{t('miniChefBody')}</p>
-      <Link href="/eat-out" className="mt-3 inline-flex min-h-10 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground transition hover:-translate-y-0.5" data-testid="link-mini-chef-ideas">
-        {t('findAPlace')}
-      </Link>
-    </aside>
+    <MiniChefPanel mobileOverlay className="animate-rise-in fixed bottom-[calc(4.9rem+env(safe-area-inset-bottom))] right-4 z-40 w-[min(19rem,calc(100vw-2rem))] bg-sidebar text-sidebar-foreground shadow-[0_18px_40px_hsl(164_35%_12%/.22)] md:bottom-6 md:right-6" onClose={onDismiss} cue={language === 'ar' ? 'اختار وصفة من المطبخ أو دور على مكان حقيقي قريب منك.' : 'Pick a recipe to cook at home, or find a real place nearby.'} footer={<div className="flex flex-wrap gap-2"><Link href="/cook" className="inline-flex min-h-10 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground transition hover:-translate-y-0.5" data-testid="link-mini-chef-recipes">{t('cook')}</Link><Link href="/eat-out" className="inline-flex min-h-10 items-center rounded-full border border-sidebar-foreground/20 px-4 text-sm font-bold text-sidebar-foreground transition hover:border-primary" data-testid="link-mini-chef-ideas">{t('findAPlace')}</Link></div>} />
   );
 }
 
